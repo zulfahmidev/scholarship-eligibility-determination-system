@@ -1,9 +1,6 @@
 import os
 from datetime import timedelta
-import secrets
-from dotenv import set_key
 from flask_cors import CORS
-from sqlalchemy.pool import NullPool
 
 class InitConfig() :
 
@@ -27,7 +24,10 @@ class InitConfig() :
         app.config['SQLALCHEMY_DATABASE_URI'] =\
             f'mysql://{db_config["user"]}:{db_config["pass"]}@{db_config["host"]}:{db_config["port"]}/{db_config["name"]}'
         app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-            'poolclass': NullPool
+            'pool_size': 10,
+            'max_overflow': 5,
+            'pool_recycle': 1800,  # Hindari timeout
+            'pool_pre_ping': True,  # Cek koneksi sebelum dipakai
         }
         
         # JWT Configuration
